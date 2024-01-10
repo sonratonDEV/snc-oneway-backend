@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\MainCategoryController;
 
 // test main route
 Route::get('/', function(){
@@ -29,7 +30,12 @@ Route::get('/pg-connect', function(){
 });
 
 // employees controller
-Route::prefix('employee') -> controller(EmployeeController::class) -> group(function () {
+Route::prefix('snc-oneway') -> controller(EmployeeController::class) -> group(function () {
     Route::post('/signin','employeeSignIn');
+    Route::post('/create','create');
+});
+
+Route::prefix('snc-oneway') -> controller(MainCategoryController::class) -> group(function () {
+    Route::post('/create','create');
 });
 

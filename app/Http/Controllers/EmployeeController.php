@@ -65,11 +65,13 @@ class EmployeeController extends Controller
                 "status" => "success",
                 "message" => "Sign in success",
                 "data" => [
-                    "emp_id" =>$result[0]->emp_id,
-                    "role"   =>$result[0]->role,
-                    "name_th"   =>$result[0]->name_th,
-                    "name_en"   =>$result[0]->name_en,
-                    "token"   =>$token,
+                    [
+                        "emp_id" =>$result[0]->emp_id,
+                        "role"   =>$result[0]->role,
+                        "name_th"   =>$result[0]->name_th,
+                        "name_en"   =>$result[0]->name_en,
+                        "token"   =>$token,
+                    ]
                 ],
             ]);
         } catch (\Exception $e) {
