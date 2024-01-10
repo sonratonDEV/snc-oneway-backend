@@ -95,4 +95,54 @@ class MainCategoryController extends Controller
             ], 500);
         }
     }
+
+    function update(Request $request){
+        try {
+            $header = $request -> header("Authorization");
+            $jwt = $this -> jwtUtils->verifyToken($header);
+            if($jwt->state == false){
+                return response() -> json([
+                    "status" => 'error',
+                    "message" => "Unauthorized, please login",
+                    "data" => [],
+                ]);
+            }
+
+            $validator = Validator::make(
+                $request -> all(),
+                [
+                    'main_category_desc' => 'required|string',
+                    'main_category_id' => 'required|uuid',
+                ]
+            );
+            if ($validator->fails()){
+                return response() -> json([
+                    'status' => 'error',
+                    'message' => 'Bad request',
+                    'data' => [
+                        ['validator' => $validator->errors()]
+                    ]
+                ],400);
+            }
+
+            $mainCategoryDesc = $request -> main_category_desc;
+            $mainCategoryID = $request -> main_category_id;
+
+            DB::table('main_service_categories')->where('main_category_id',$mainCategoryID)
+            ->update(['main_category_desc' => $mainCategoryDesc, 'updated_at'=>DB::raw('now()')]);
+
+            return response()->json([
+                "status"    => "success",
+                "message"   => 'Update data successfully',
+                "data"      => [$mainCategoryDesc],
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "status"    => "error",
+                "message"   => $e->getMessage(),
+                "data"      => [],
+            ], 500);
+        }
+    }
 }
