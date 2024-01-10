@@ -30,6 +30,6 @@ Route::get('/pg-connect', function(){
 
 // employees controller
 Route::prefix('employee') -> controller(EmployeeController::class) -> group(function () {
-    Route::post('/signin','employeessignIn');
+    Route::post('/signin','employeeSignIn');
 });
 
