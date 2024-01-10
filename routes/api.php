@@ -37,5 +37,6 @@ Route::prefix('snc-oneway') -> controller(EmployeeController::class) -> group(fu
 
 Route::prefix('snc-oneway') -> controller(MainCategoryController::class) -> group(function () {
     Route::post('/create','create');
+    Route::get('/get-all','getAll');
 });
 

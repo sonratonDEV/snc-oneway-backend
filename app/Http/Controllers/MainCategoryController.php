@@ -55,7 +55,36 @@ class MainCategoryController extends Controller
             return response()->json([
                 "status"    => "success",
                 "message"   => 'Insert data successfully',
+                "data"      => [$mainCategoryDesc],
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "status"    => "error",
+                "message"   => $e->getMessage(),
                 "data"      => [],
+            ], 500);
+        }
+    }
+
+    function getAll(Request $request){
+        try {
+            $header = $request -> header("Authorization");
+            $jwt = $this -> jwtUtils->verifyToken($header);
+            if($jwt->state == false){
+                return response() -> json([
+                    "status" => 'error',
+                    "message" => "Unauthorized, please login",
+                    "data" => [],
+                ]);
+            }
+
+            $get = DB::table('main_service_categories')->select('*')->get();
+
+            return response()->json([
+                "status"    => "success",
+                "message"   => 'Select data successfully',
+                "data"      => [$get],
             ], 200);
 
         } catch (\Exception $e) {
