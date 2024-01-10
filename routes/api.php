@@ -39,5 +39,6 @@ Route::prefix('snc-oneway') -> controller(MainCategoryController::class) -> grou
     Route::post('/create','create');
     Route::get('/get-all','getAll');
     Route::put('/update','update');
+    Route::delete('/delete','delete');
 });
 
