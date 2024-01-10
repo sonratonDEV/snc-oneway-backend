@@ -38,7 +38,7 @@ class EmployeeController extends Controller
 
             $empID = $request->emp_id;
             // $result = DB::table('tb_employees')->whereRaw( "emp_id like '%$empID'")->get();
-            $result = DB::table('employees')->selectRaw(
+            $result = DB::table('tb_employees')->selectRaw(
                 "emp_id
                 ,name->>'th' as name_th
                 ,name->>'en' as name_en

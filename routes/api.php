@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MainCategoryController;
+use App\Http\Controllers\SubCategoryController;
 
 // test main route
 Route::get('/', function(){
@@ -35,8 +36,16 @@ Route::prefix('snc-oneway') -> controller(EmployeeController::class) -> group(fu
     Route::post('/create','create');
 });
 
-Route::prefix('snc-oneway') -> controller(MainCategoryController::class) -> group(function () {
+Route::prefix('main-oneway') -> controller(MainCategoryController::class) -> group(function () {
     Route::post('/create','create');
     Route::get('/get-all','getAll');
+    Route::put('/update','update');
+    Route::delete("/delete", "delete");
 });
 
+Route::prefix('sub-oneway') -> controller(SubCategoryController::class) -> group(function () {
+    Route::post('/create','create');
+    Route::get('/get-all','getAll');
+    Route::put('/update','update');
+    Route::delete("/delete", "delete");
+});

@@ -10,7 +10,7 @@ use App\Http\Libraries\JWT\JWTUtils; //JWT
 
 use DateTime;
 
-class MainCategoryController extends Controller
+class SubCategoryController extends Controller
 {
     private $jwtUtils;
     public function __construct()
@@ -27,15 +27,16 @@ class MainCategoryController extends Controller
                     "status" => 'error',
                     "message" => "Unauthorized, please login",
                     "data" => [],
-                ]);
+                ], 401);
             }
 
+            $rules = [
+                "main_category_id"      => ["required", "uuid"],
+                "sub_category_desc"    => ["required", "string"],
+            ];
+
             $validator = Validator::make(
-                $request -> all(),
-                [
-                    'main_category_desc' => 'required|string'
-                ]
-            );
+                $request -> all(), $rules);
             if ($validator->fails()){
                 return response() -> json([
                     'status' => 'error',
@@ -46,16 +47,15 @@ class MainCategoryController extends Controller
                 ],400);
             }
 
-            $mainCategoryDesc = $request -> main_category_desc;
-
-            DB::table('tb_main_service_categories')->insert([
-                'main_category_desc' => $mainCategoryDesc
+            DB::table('tb_sub_service_categories')->insert([
+                "main_category_id" => $request->main_category_id,
+                'sub_category_desc' => $request->sub_category_desc
             ]);
 
             return response()->json([
                 "status"    => "success",
                 "message"   => 'Insert data successfully',
-                "data"      => [$mainCategoryDesc],
+                "data"      => [$request->sub_category_desc],
             ], 200);
 
         } catch (\Exception $e) {
@@ -79,7 +79,7 @@ class MainCategoryController extends Controller
                 ]);
             }
 
-            $get = DB::table('tb_main_service_categories')->select('*')->get();
+            $get = DB::table('tb_sub_service_categories')->select('*')->get();
 
             return response()->json([
                 "status"    => "success",
@@ -109,7 +109,7 @@ class MainCategoryController extends Controller
 
             $rules = [
                 "main_category_id"      => ["required", "uuid"],
-                "main_category_desc"    => ["required", "string", "min:1"],
+                "main_category_desc"    => ["required", "string", "min:3"],
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -121,7 +121,7 @@ class MainCategoryController extends Controller
                 ]
             ], 400);
 
-            DB::table("tb_main_service_categories")->where("main_category_id", $request->main_category_id)->update([
+            DB::table("tb_sub_service_categories")->where("main_category_id", $request->main_category_id)->update([
                 "main_category_desc"    => $request->main_category_desc,
                 "updated_at"            => DB::raw("now()"),
             ]);
@@ -139,7 +139,7 @@ class MainCategoryController extends Controller
             ], 500);
         }
     }
-
+    
     function delete(Request $request)
     {
         try {
@@ -164,7 +164,7 @@ class MainCategoryController extends Controller
                 ]
             ], 400);
 
-            DB::table("tb_main_service_categories")->where("main_category_id", $request->main_category_id)->delete();
+            DB::table("tb_sub_service_categories")->where("main_category_id", $request->main_category_id)->delete();
 
             return response()->json([
                 "status" => "success",
