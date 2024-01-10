@@ -108,8 +108,9 @@ class SubCategoryController extends Controller
             ], 401);
 
             $rules = [
+                "sub_category_id"      => ["required", "uuid"],
                 "main_category_id"      => ["required", "uuid"],
-                "main_category_desc"    => ["required", "string", "min:3"],
+                "sub_category_desc"    => ["required", "string", "min:1"],
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -121,15 +122,18 @@ class SubCategoryController extends Controller
                 ]
             ], 400);
 
-            DB::table("tb_sub_service_categories")->where("main_category_id", $request->main_category_id)->update([
-                "main_category_desc"    => $request->main_category_desc,
+            DB::table("tb_sub_service_categories")->where(
+                "sub_category_id", $request->sub_category_id)->where(
+                "main_category_id", $request->main_category_id
+            )->update([
+                "sub_category_desc"    => $request->sub_category_desc,
                 "updated_at"            => DB::raw("now()"),
             ]);
 
             return response()->json([
                 "status" => "success",
                 "message" => "Updated main category success",
-                "data" => [],
+                "data" => [$request->sub_category_desc],
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -152,6 +156,7 @@ class SubCategoryController extends Controller
             ], 401);
 
             $rules = [
+                "sub_category_id"      => ["required", "uuid"],
                 "main_category_id"      => ["required", "uuid"],
             ];
 
@@ -164,7 +169,8 @@ class SubCategoryController extends Controller
                 ]
             ], 400);
 
-            DB::table("tb_sub_service_categories")->where("main_category_id", $request->main_category_id)->delete();
+            DB::table("tb_sub_service_categories")->where("sub_category_id", $request->sub_category_id)
+            ->where("main_category_id", $request->main_category_id)->delete();
 
             return response()->json([
                 "status" => "success",
