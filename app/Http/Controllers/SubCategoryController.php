@@ -169,14 +169,34 @@ class SubCategoryController extends Controller
                 ]
             ], 400);
 
-            DB::table("tb_sub_service_categories")->where("sub_category_id", $request->sub_category_id)
-            ->where("main_category_id", $request->main_category_id)->delete();
+            // DB::table("tb_sub_service_categories")->where("sub_category_id", $request->sub_category_id)->where("main_category_id", $request->main_category_id)->delete();
+            $count_result= DB::table("tb_services")->where("sub_category_id", $request->sub_category_id)->where("main_category_id", $request->main_category_id)->count();
+            
+            if(($count_result) !=0 ){
+                return response()->json([
+                    "status" => "success",
+                    "message" => "Can not deleted main category",
+                    "data" => [
+                            $count_result
+                    ],
+                ], 201);
 
-            return response()->json([
+            } else{
+                DB::table("tb_sub_service_categories")->where("sub_category_id", $request->sub_category_id)->where("main_category_id", $request->main_category_id)->delete();
+
+                return response()->json([
                 "status" => "success",
                 "message" => "Deleted main category success",
                 "data" => [],
             ], 201);
+            }
+
+            // return response()->json([
+            //     "status" => "success",
+            //     "message" => "Deleted main category success",
+            //     "data" => [],
+            // ], 201);
+
         } catch (\Exception $e) {
             return response()->json([
                 "status"    => "error",

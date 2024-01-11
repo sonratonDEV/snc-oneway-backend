@@ -10,7 +10,7 @@ use App\Http\Libraries\JWT\JWTUtils; //JWT
 
 use DateTime;
 
-class MainCategoryController extends Controller
+class ServiceCategoryController extends Controller
 {
     private $jwtUtils;
     public function __construct()
@@ -27,15 +27,17 @@ class MainCategoryController extends Controller
                     "status" => 'error',
                     "message" => "Unauthorized, please login",
                     "data" => [],
-                ]);
+                ], 401);
             }
 
+            $rules = [
+                "main_category_id"      => ["required", "uuid"],
+                "sub_category_id"    => ["required", "uuid"],
+                "service_name"    => ["required", "array"],
+            ];
+
             $validator = Validator::make(
-                $request -> all(),
-                [
-                    'main_category_desc' => 'required|string'
-                ]
-            );
+                $request -> all(), $rules);
             if ($validator->fails()){
                 return response() -> json([
                     'status' => 'error',
@@ -46,16 +48,16 @@ class MainCategoryController extends Controller
                 ],400);
             }
 
-            $mainCategoryDesc = $request -> main_category_desc;
-
-            DB::table('tb_main_service_categories')->insert([
-                'main_category_desc' => $mainCategoryDesc
+            DB::table('tb_services')->insert([
+                "main_category_id" => $request->main_category_id,
+                'sub_category_id' => $request->sub_category_id,
+                "service_name" => json_encode($request->service_name)
             ]);
 
             return response()->json([
                 "status"    => "success",
                 "message"   => 'Insert data successfully',
-                "data"      => [$mainCategoryDesc],
+                "data"      => [json_encode($request->service_name)],
             ], 200);
 
         } catch (\Exception $e) {
@@ -79,7 +81,7 @@ class MainCategoryController extends Controller
                 ]);
             }
 
-            $get = DB::table('tb_main_service_categories')->select('*')->get();
+            $get = DB::table('tb_services')->select('*')->get();
 
             return response()->json([
                 "status"    => "success",
@@ -108,8 +110,10 @@ class MainCategoryController extends Controller
             ], 401);
 
             $rules = [
+                "service_id"       => ["required", "uuid"],
+                "sub_category_id"      => ["required", "uuid"],
                 "main_category_id"      => ["required", "uuid"],
-                "main_category_desc"    => ["required", "string", "min:1"],
+                "service_name"    => ["required", "array"],
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -121,15 +125,19 @@ class MainCategoryController extends Controller
                 ]
             ], 400);
 
-            DB::table("tb_main_service_categories")->where("main_category_id", $request->main_category_id)->update([
-                "main_category_desc"    => $request->main_category_desc,
+            DB::table("tb_sub_service_categories")
+            ->where("service_id", $request->service_id)
+            ->where("sub_category_id", $request->sub_category_id)
+            ->where("main_category_id", $request->main_category_id)
+            ->update([
+                "service_name"    => jason_encode($request->sub_category_desc),
                 "updated_at"            => DB::raw("now()"),
             ]);
 
             return response()->json([
                 "status" => "success",
                 "message" => "Updated main category success",
-                "data" => [],
+                "data" => [jason_encode($request->sub_category_desc)],
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -139,7 +147,7 @@ class MainCategoryController extends Controller
             ], 500);
         }
     }
-
+    
     function delete(Request $request)
     {
         try {
@@ -152,7 +160,9 @@ class MainCategoryController extends Controller
             ], 401);
 
             $rules = [
-                "main_category_id"      => ["required", "uuid"],
+                "sub_category_id"   => ["required", "uuid"],
+                "main_category_id"  => ["required", "uuid"],
+                "service_id"       => ["required", "uuid"]
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -164,33 +174,14 @@ class MainCategoryController extends Controller
                 ]
             ], 400);
 
-            // DB::table("tb_main_service_categories")->where("main_category_id", $request->main_category_id)->delete();
-            $count_result= DB::table("tb_sub_service_categories")->where("main_category_id", $request->main_category_id)->count();
-            
-            if(($count_result) !=0 ){
-                return response()->json([
-                    "status" => "success",
-                    "message" => "Can not deleted main category",
-                    "data" => [
-                            $count_result
-                    ],
-                ], 201);
+            DB::table("tb_services")->where("sub_category_id", $request->sub_category_id)
+            ->where("main_category_id", $request->main_category_id)->where("service_id", $request->seervice_id)->delete();
 
-            } else{
-                DB::table("tb_main_service_categories")->where("main_category_id", $request->main_category_id)->delete();
-
-                return response()->json([
+            return response()->json([
                 "status" => "success",
                 "message" => "Deleted main category success",
                 "data" => [],
             ], 201);
-            }
-
-            // return response()->json([
-            //     "status" => "success",
-            //     "message" => "Deleted main category success",
-            //     "data" => [],
-            // ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 "status"    => "error",

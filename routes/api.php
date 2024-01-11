@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MainCategoryController;
 use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\ServiceCategoryController;
 
 // test main route
 Route::get('/', function(){
@@ -44,6 +45,13 @@ Route::prefix('main-oneway') -> controller(MainCategoryController::class) -> gro
 });
 
 Route::prefix('sub-oneway') -> controller(SubCategoryController::class) -> group(function () {
+    Route::post('/create','create');
+    Route::get('/get-all','getAll');
+    Route::put('/update','update');
+    Route::delete("/delete", "delete");
+});
+
+Route::prefix('service-oneway') -> controller(ServiceCategoryController::class) -> group(function () {
     Route::post('/create','create');
     Route::get('/get-all','getAll');
     Route::put('/update','update');
