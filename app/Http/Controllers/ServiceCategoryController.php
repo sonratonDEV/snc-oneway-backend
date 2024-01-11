@@ -130,14 +130,14 @@ class ServiceCategoryController extends Controller
             ->where("sub_category_id", $request->sub_category_id)
             ->where("main_category_id", $request->main_category_id)
             ->update([
-                "service_name"    => jason_encode($request->sub_category_desc),
-                "updated_at"            => DB::raw("now()"),
+                "service_name"    => ($request->sub_category_desc), ///
+                "updated_at"      => DB::raw("now()"),
             ]);
 
             return response()->json([
                 "status" => "success",
                 "message" => "Updated main category success",
-                "data" => [jason_encode($request->sub_category_desc)],
+                "data" => [($request->sub_category_desc)], ///
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
