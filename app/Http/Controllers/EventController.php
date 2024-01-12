@@ -267,20 +267,19 @@ class EventController extends Controller
     //* [GET] /event/events?limit_event=<limit_event>&page_number=<page_number>
     function events(Request $request){
         try {
-            $header = $request -> header("Authorization");
-            $jwt = $this -> jwtUtils->verifyToken($header);
-            if($jwt->state == false){
-                return response() -> json([
-                    "status" => 'error',
-                    "message" => "Unauthorized, please login",
-                    "data" => [],
-                ]);
-            }
- $rules = [
-                "limit_event" => ["required", "integer", "min:1", "max:10"],
+            $authorize = $request->header("Authorization");
+            $jwt = $this->jwtUtils->verifyToken($authorize);
+            if (!$jwt->state) return response()->json([
+                "status" => "error",
+                "message" => "Unauthorized",
+                "data" => []
+            ], 401);
+ 
+            $rules = [
+                "limit_event" => ["required", "integer", "min:1",],
                 "page_number" => ["required", "integer", "min:1"],
             ];
-
+ 
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) return response()->json([
                 "status" => "error",
@@ -289,7 +288,7 @@ class EventController extends Controller
                     ["validator" => $validator->errors()]
                 ]
             ], 400);
-
+ 
             $result = DB::select(
                 "select
                 _event_id as event_id
@@ -307,13 +306,12 @@ class EventController extends Controller
                 from fn_find_events(?, ?);",
                 [$request->limit_event, $request->page_number]
             );
-
+ 
             return response()->json([
-                "status"    => "success",
-                "message"   => 'Select data successfully',
-                "data"      => $result,
-            ], 200);
-
+                "status" => "success",
+                "message" => "Data from query",
+                "data" => $result,
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 "status"    => "error",
