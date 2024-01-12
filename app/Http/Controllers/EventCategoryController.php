@@ -95,96 +95,89 @@ class EventCategoryController extends Controller
         }
     }
 
-//     function update(Request $request)
-//     {
-//         try {
-//             $authorize = $request->header("Authorization");
-//             $jwt = $this->jwtUtils->verifyToken($authorize);
-//             if (!$jwt->state) return response()->json([
-//                 "status" => "error",
-//                 "message" => "Unauthorized",
-//                 "data" => []
-//             ], 401);
+    function update(Request $request)
+    {
+        try {
+            $authorize = $request->header("Authorization");
+            $jwt = $this->jwtUtils->verifyToken($authorize);
+            if (!$jwt->state) return response()->json([
+                "status" => "error",
+                "message" => "Unauthorized",
+                "data" => []
+            ], 401);
 
-//             $rules = [
-//                 "service_id"       => ["required", "uuid"],
-//                 "sub_category_id"      => ["required", "uuid"],
-//                 "main_category_id"      => ["required", "uuid"],
-//                 "service_name"    => ["required", "array"],
-//             ];
+            $rules = [
+                "event_category_id"       => ["required", "uuid"],
+                "event_category_desc"      => ["required", "string"],
+            ];
 
-//             $validator = Validator::make($request->all(), $rules);
-//             if ($validator->fails()) return response()->json([
-//                 "status" => "error",
-//                 "message" => "Bad request",
-//                 "data" => [
-//                     ["validator" => $validator->errors()]
-//                 ]
-//             ], 400);
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) return response()->json([
+                "status" => "error",
+                "message" => "Bad request",
+                "data" => [
+                    ["validator" => $validator->errors()]
+                ]
+            ], 400);
 
-//             DB::table("tb_sub_service_categories")
-//             ->where("service_id", $request->service_id)
-//             ->where("sub_category_id", $request->sub_category_id)
-//             ->where("main_category_id", $request->main_category_id)
-//             ->update([
-//                 "service_name"    => ($request->sub_category_desc),
-//                 "updated_at"      => DB::raw("now()"),
-//             ]);
+            DB::table("tb_event_categories")
+            ->where("event_category_id", $request->event_category_id)
+            ->update([
+                "event_category_desc"    => ($request->event_category_desc),
+                "updated_at"      => DB::raw("now()"),
+            ]);
 
-//             return response()->json([
-//                 "status" => "success",
-//                 "message" => "Updated main category success",
-//                 "data" => [($request->sub_category_desc)],
-//             ], 201);
-//         } catch (\Exception $e) {
-//             return response()->json([
-//                 "status"    => "error",
-//                 "message"   => $e->getMessage(),
-//                 "data"      => [],
-//             ], 500);
-//         }
-//     }
+            return response()->json([
+                "status" => "success",
+                "message" => "Updated main category success",
+                "data" => [($request->sub_category_desc)],
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status"    => "error",
+                "message"   => $e->getMessage(),
+                "data"      => [],
+            ], 500);
+        }
+    }
     
-//     function delete(Request $request)
-//     {
-//         try {
-//             $authorize = $request->header("Authorization");
-//             $jwt = $this->jwtUtils->verifyToken($authorize);
-//             if (!$jwt->state) return response()->json([
-//                 "status" => "error",
-//                 "message" => "Unauthorized",
-//                 "data" => []
-//             ], 401);
+    function delete(Request $request)
+    {
+        try {
+            $authorize = $request->header("Authorization");
+            $jwt = $this->jwtUtils->verifyToken($authorize);
+            if (!$jwt->state) return response()->json([
+                "status" => "error",
+                "message" => "Unauthorized",
+                "data" => []
+            ], 401);
 
-//             $rules = [
-//                 "sub_category_id"   => ["required", "uuid"],
-//                 "main_category_id"  => ["required", "uuid"],
-//                 "service_id"       => ["required", "uuid"]
-//             ];
+            $rules = [
+                "event_category_id"       => ["required", "uuid"],
+            ];
 
-//             $validator = Validator::make($request->all(), $rules);
-//             if ($validator->fails()) return response()->json([
-//                 "status" => "error",
-//                 "message" => "Bad request",
-//                 "data" => [
-//                     ["validator" => $validator->errors()]
-//                 ]
-//             ], 400);
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) return response()->json([
+                "status" => "error",
+                "message" => "Bad request",
+                "data" => [
+                    ["validator" => $validator->errors()]
+                ]
+            ], 400);
 
-//             DB::table("tb_services")->where("sub_category_id", $request->sub_category_id)
-//             ->where("main_category_id", $request->main_category_id)->where("service_id", $request->seervice_id)->delete();
+            DB::table("tb_event_categories")->where("event_category_id", $request->event_category_id)->delete();
 
-//             return response()->json([
-//                 "status" => "success",
-//                 "message" => "Deleted main category success",
-//                 "data" => [],
-//             ], 201);
-//         } catch (\Exception $e) {
-//             return response()->json([
-//                 "status"    => "error",
-//                 "message"   => $e->getMessage(),
-//                 "data"      => [],
-//             ], 500);
-//         }
-//     }
+            return response()->json([
+                "status" => "success",
+                "message" => "Deleted main category success",
+                "data" => [],
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status"    => "error",
+                "message"   => $e->getMessage(),
+                "data"      => [],
+            ], 500);
+        }
+    }
 }
