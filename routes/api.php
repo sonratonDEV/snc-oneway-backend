@@ -56,16 +56,16 @@ Route::prefix('sub-oneway') -> controller(SubCategoryController::class) -> group
 Route::prefix('service-oneway') -> controller(ServiceCategoryController::class) -> group(function () {
     Route::post('/create','create');
     Route::get('/get-all','getAll');
-    Route::put('/update','update');
+    // Route::put('/update','update');
     Route::delete("/delete", "delete");
 });
 
-// Route::prefix('eventcat-oneway') -> controller(EventCategoryController::class) -> group(function () {
-//     Route::post('/create','create');
-//     Route::get('/get-all','getAll');
+Route::prefix('eventcat-oneway') -> controller(EventCategoryController::class) -> group(function () {
+    Route::post('/create','create');
+    Route::get('/get-all','getAll');
 //     Route::put('/update','update');
 //     Route::delete("/delete", "delete");
-// });
+});
 Route::prefix('event-oneway') -> controller(EventController::class) -> group(function () {
     Route::post('/create','create');
     // Route::get('/get-all','getAll');

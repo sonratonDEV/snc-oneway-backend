@@ -12,105 +12,88 @@ use DateTime;
 
 class EventCategoryController extends Controller
 {
-//     private $jwtUtils;
-//     public function __construct()
-//     {
-//         $this->jwtUtils = new JWTUtils();
-//     }
+    private $jwtUtils;
+    public function __construct()
+    {
+        $this->jwtUtils = new JWTUtils();
+    }
 
-//     function create(Request $request){
-//         try {
-//             $authorize = $request -> header("Authorization");
-//             $jwt = $this -> jwtUtils->verifyToken($authorize);
-//             if($jwt->state == false){
-//                 return response() -> json([
-//                     "status" => 'error',
-//                     "message" => "Unauthorized, please login",
-//                     "data" => [],
-//                 ], 401);
-//             }
-//             $decode = $jwt->deccoded;
+    function create(Request $request){
+        try {
+            $authorize = $request -> header("Authorization");
+            $jwt = $this -> jwtUtils->verifyToken($authorize);
+            if($jwt->state == false){
+                return response() -> json([
+                    "status" => 'error',
+                    "message" => "Unauthorized, please login",
+                    "data" => [],
+                ], 401);
+            }
 
-//             $rules = [
+            $rules = [
 
-//                 "event_category_id" => ["required", "uuid"],
-//                 "event_name"        => ["required", "string"],
-//                 "event_desc"        => ["required", "string"],
-//                 "image"             => ["required", "string"],
-//                 "video_url"         => ["required", "string"],
-//                 "ref_url"           => ["required", "string"],
-//                 "started_at"        => ["required", "date"],
-//                 "finished_at"       => ["required", "date"],
-//                 "creator_id"        => ["required", "string"]
+                "event_category_desc" => ["required", "string"],
 
-//             ];
+            ];
 
-//             $validator = Validator::make($request -> all(), $rules);
-//             if ($validator->fails()){
-//                 return response() -> json([
-//                     'status' => 'error',
-//                     'message' => 'Bad request',
-//                     'data' => [
-//                         ['validator' => $validator->errors()]
-//                     ]
-//                 ],400);
-//             }
+            $validator = Validator::make($request -> all(), $rules);
+            if ($validator->fails()){
+                return response() -> json([
+                    'status' => 'error',
+                    'message' => 'Bad request',
+                    'data' => [
+                        ['validator' => $validator->errors()]
+                    ]
+                ],400);
+            }
 
-//             DB::table('tb_services')->insert([
-//                 "event_category_id" => $request->event_category_id,
-//                 'event_name' => $request->event_name,
-//                 "event_desc" => $request->event_desc,
-//                 "image" => $request->image,
-//                 "video_url" => $request->video_url,
-//                 "ref_url" => $request->ref_url,
-//                 "started_at" => $request->started_at,
-//                 "finished_at"=> $request->finished_at,
-//                 "creator_id" => $decode->emp_id,
-//             ]);
+            DB::table('tb_event_categories')->insert([
+                "event_category_desc" => $request->event_category_desc,
+            ]);
 
-//             return response()->json([
-//                 "status"    => "success",
-//                 "message"   => 'Insert data successfully',
-//                 "data"      => [],
-//             ], 200);
+            return response()->json([
+                "status"    => "success",
+                "message"   => 'Insert data successfully',
+                "data"      => [$rules],
+            ], 200);
 
-//         } catch (\Exception $e) {
-//             return response()->json([
-//                 "status"    => "error",
-//                 "message"   => $e->getMessage(),
-//                 "data"      => [],
-//             ], 500);
-//         }
-//     }
+        } catch (\Exception $e) {
+            return response()->json([
+                "status"    => "error",
+                "message"   => $e->getMessage(),
+                "data"      => [],
+            ], 500);
+        }
+    }
 
-//     function getAll(Request $request){
-//         try {
-//             $header = $request -> header("Authorization");
-//             $jwt = $this -> jwtUtils->verifyToken($header);
-//             if($jwt->state == false){
-//                 return response() -> json([
-//                     "status" => 'error',
-//                     "message" => "Unauthorized, please login",
-//                     "data" => [],
-//                 ]);
-//             }
+    function getAll(Request $request){
+        try {
+            $header = $request -> header("Authorization");
+            $jwt = $this -> jwtUtils->verifyToken($header);
+            if($jwt->state == false){
+                return response() -> json([
+                    "status" => 'error',
+                    "message" => "Unauthorized, please login",
+                    "data" => [],
+                ]);
+            }
 
-//             $get = DB::table('tb_services')->select('*')->get();
+            $get = DB::table('tb_event_categories')->select('*')->get();
 
-//             return response()->json([
-//                 "status"    => "success",
-//                 "message"   => 'Select data successfully',
-//                 "data"      => [$get],
-//             ], 200);
+            return response()->json([
+                "status"    => "success",
+                "message"   => 'Select data successfully',
+                "data"      => [$get],
+            ], 200);
 
-//         } catch (\Exception $e) {
-//             return response()->json([
-//                 "status"    => "error",
-//                 "message"   => $e->getMessage(),
-//                 "data"      => [],
-//             ], 500);
-//         }
-//     }
+        } catch (\Exception $e) {
+            return response()->json([
+                "status"    => "error",
+                "message"   => $e->getMessage(),
+                "data"      => [],
+            ], 500);
+        }
+    }
 
 //     function update(Request $request)
 //     {
