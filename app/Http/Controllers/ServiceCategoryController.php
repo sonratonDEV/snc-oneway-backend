@@ -17,7 +17,7 @@ class ServiceCategoryController extends Controller
     {
         $this->jwtUtils = new JWTUtils();
     }
-
+//* [GET] /service-oneway/create
     function create(Request $request){
         try {
             $header = $request -> header("Authorization");
@@ -68,7 +68,7 @@ class ServiceCategoryController extends Controller
             ], 500);
         }
     }
-
+//* [GET] /service-oneway/get-all
     function getAll(Request $request){
         try {
             $header = $request -> header("Authorization");
@@ -98,6 +98,7 @@ class ServiceCategoryController extends Controller
         }
     }
 
+    //* [UPDATE] /service-oneway/update
     function update(Request $request)
     {
         try {
@@ -125,19 +126,19 @@ class ServiceCategoryController extends Controller
                 ]
             ], 400);
 
-            DB::table("tb_sub_service_categories")
+            DB::table("tb_services")
             ->where("service_id", $request->service_id)
             ->where("sub_category_id", $request->sub_category_id)
             ->where("main_category_id", $request->main_category_id)
             ->update([
-                "service_name"    => ($request->sub_category_desc), ///
+                "service_name"    => json_encode($request->service_name), 
                 "updated_at"      => DB::raw("now()"),
             ]);
 
             return response()->json([
                 "status" => "success",
                 "message" => "Updated main category success",
-                "data" => [($request->sub_category_desc)], ///
+                "data" => [json_encode($request->service_name)], 
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -148,6 +149,7 @@ class ServiceCategoryController extends Controller
         }
     }
     
+     //* [DELETE] /service-oneway/delete
     function delete(Request $request)
     {
         try {
