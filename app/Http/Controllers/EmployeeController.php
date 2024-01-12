@@ -18,7 +18,7 @@ class EmployeeController extends Controller
     {
         $this->jwtUtils = new JWTUtils();
     }
-
+//* [POST] /snc-oneway/signin
     function employeeSignIn(Request $request){
         try {
             $rules = [
