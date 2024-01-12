@@ -66,7 +66,7 @@ class EventController extends Controller
                 ],400);
             }
             #create folder
-            $path = getcwd() . "\\..\\..\\images\\events\\";
+            $path = getcwd() . "\\..\\images\\events\\";
             if (!is_dir($path)) mkdir($path, 0777, true);
 
             $fileName = $this->randomName(5) . time() . ".png";
@@ -201,7 +201,7 @@ class EventController extends Controller
             );
 
             foreach ($result as $row) {
-                $row->image = is_null($row->image) ? null : "http://localhost/images/events/" . $row->image;
+                $row->image = is_null($row->image) ? null : "http://localhost/snc-oneway-tutorials/images/events/" . $row->image;
             }
  
             return response()->json([
