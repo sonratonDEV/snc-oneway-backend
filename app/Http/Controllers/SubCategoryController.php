@@ -18,6 +18,7 @@ class SubCategoryController extends Controller
         $this->jwtUtils = new JWTUtils();
     }
 
+//* [POST] sub-oneway/create
     function create(Request $request){
         try {
             $header = $request -> header("Authorization");
@@ -67,6 +68,7 @@ class SubCategoryController extends Controller
         }
     }
 
+//* [GET] /sub-oneway/get-all
     function getAll(Request $request){
         try {
             $header = $request -> header("Authorization");
@@ -96,6 +98,7 @@ class SubCategoryController extends Controller
         }
     }
 
+//* [UPDATE] /sub-oneway/update
     function update(Request $request)
     {
         try {
@@ -143,7 +146,8 @@ class SubCategoryController extends Controller
             ], 500);
         }
     }
-    
+
+//* [DELETE] /sub-oneway/delete
     function delete(Request $request)
     {
         try {
