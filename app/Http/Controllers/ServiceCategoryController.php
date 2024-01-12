@@ -17,7 +17,7 @@ class ServiceCategoryController extends Controller
     {
         $this->jwtUtils = new JWTUtils();
     }
-//* [GET] /service-oneway/create
+//* [POST] /service-oneway/create
     function create(Request $request){
         try {
             $header = $request -> header("Authorization");
@@ -98,7 +98,7 @@ class ServiceCategoryController extends Controller
         }
     }
 
-    //* [UPDATE] /service-oneway/update
+//* [UPDATE] /service-oneway/update
     function update(Request $request)
     {
         try {
@@ -149,7 +149,7 @@ class ServiceCategoryController extends Controller
         }
     }
     
-     //* [DELETE] /service-oneway/delete
+//* [DELETE] /service-oneway/delete
     function delete(Request $request)
     {
         try {
