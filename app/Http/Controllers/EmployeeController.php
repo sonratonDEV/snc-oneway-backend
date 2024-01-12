@@ -33,7 +33,6 @@ class EmployeeController extends Controller
                     "validator" => $validator->errors()
                 ],
 
-
             ],400);
 
             $empID = $request->emp_id;
