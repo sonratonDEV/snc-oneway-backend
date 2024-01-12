@@ -18,6 +18,7 @@ class MainCategoryController extends Controller
         $this->jwtUtils = new JWTUtils();
     }
 
+//* [POST] /main-oneway/create
     function create(Request $request){
         try {
             $header = $request -> header("Authorization");
@@ -67,6 +68,7 @@ class MainCategoryController extends Controller
         }
     }
 
+//* [GET] /main-oneway/get-all
     function getAll(Request $request){
         try {
             $header = $request -> header("Authorization");
@@ -96,6 +98,7 @@ class MainCategoryController extends Controller
         }
     }
 
+//* [UPDATE] /main-oneway/update
     function update(Request $request)
     {
         try {
@@ -140,6 +143,7 @@ class MainCategoryController extends Controller
         }
     }
 
+//* [DELETE] /main-oneway/delete
     function delete(Request $request)
     {
         try {
