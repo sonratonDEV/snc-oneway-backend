@@ -17,7 +17,7 @@ class EventCategoryController extends Controller
     {
         $this->jwtUtils = new JWTUtils();
     }
-
+//* [POST] /eventcat-oneway/create
     function create(Request $request){
         try {
             $authorize = $request -> header("Authorization");
@@ -66,6 +66,7 @@ class EventCategoryController extends Controller
         }
     }
 
+//* [GET] /eventcat-oneway/get-all
     function getAll(Request $request){
         try {
             $header = $request -> header("Authorization");
@@ -95,6 +96,7 @@ class EventCategoryController extends Controller
         }
     }
 
+//* [UPDATE] /eventcat-oneway/update
     function update(Request $request)
     {
         try {
@@ -140,7 +142,8 @@ class EventCategoryController extends Controller
             ], 500);
         }
     }
-    
+
+//* [DELETE] /eventcat-oneway/delete
     function delete(Request $request)
     {
         try {
