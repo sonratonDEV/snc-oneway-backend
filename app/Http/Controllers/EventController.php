@@ -18,6 +18,7 @@ class EventController extends Controller
         $this->jwtUtils = new JWTUtils();
     }
 
+//* [POST] /event-oneway/create
     function create(Request $request){
         try {
             $authorize = $request -> header("Authorization");
@@ -264,7 +265,7 @@ class EventController extends Controller
         }
     }
 
-    //* [GET] /event/events?limit_event=<limit_event>&page_number=<page_number>
+//* [GET] /event/events?limit_event=<limit_event>&page_number=<page_number>
     function events(Request $request){
         try {
             $authorize = $request->header("Authorization");
