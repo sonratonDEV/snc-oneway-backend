@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator; //ตัวเช็คข้อมูล
 use Illuminate\Support\Facades\DB; //import database
+use Illuminate\Support\Facades\Cache;
 
 use App\Http\Libraries\JWT\JWTUtils; //JWT
 
 use DateTime;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ServiceCategoryController extends Controller
 {
@@ -118,6 +120,15 @@ class ServiceCategoryController extends Controller
                 "data" => []
             ], 401);
 
+            //Caching
+            $cacheKey = "abc";
+            $cacheData = Cache::get($cacheKey);
+            if (!is_null($cacheData))  return response([
+                "status" => "success",
+                "message"=> "Data from chaced",
+                "data" => json_decode($cacheData)
+            ]);
+
             $result = DB::table("tb_services as t1")->selectRaw(
                 "t1.service_id
                 ,t1.main_category_id,t2.main_category_desc
@@ -147,6 +158,9 @@ class ServiceCategoryController extends Controller
                 unset($row->main_created_at);
                 unset($row->sub_created_at);
             }
+            
+            Cache::put($cacheKey, \json_encode($result, JSON_UNESCAPED_UNICODE), \DateInterval::createFromDateString('1 minutes'));
+            // Cache::put($cacheKey, \json_encode($result, JSON_UNESCAPED_UNICODE), \DateInterval::createFromDateString('5 seconds'));
 
             return response()->json([
                 "status" => "success",
