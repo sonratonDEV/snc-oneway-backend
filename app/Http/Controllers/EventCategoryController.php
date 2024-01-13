@@ -131,7 +131,7 @@ class EventCategoryController extends Controller
 
             return response()->json([
                 "status" => "success",
-                "message" => "Updated main category success",
+                "message" => "Updated event category success",
                 "data" => [($request->sub_category_desc)],
             ], 201);
         } catch (\Exception $e) {
@@ -172,7 +172,7 @@ class EventCategoryController extends Controller
 
             return response()->json([
                 "status" => "success",
-                "message" => "Deleted main category success",
+                "message" => "Deleted event category success",
                 "data" => [],
             ], 201);
         } catch (\Exception $e) {
