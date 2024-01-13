@@ -135,7 +135,7 @@ class SubCategoryController extends Controller
 
             return response()->json([
                 "status" => "success",
-                "message" => "Updated main category success",
+                "message" => "Updated sub category success",
                 "data" => [$request->sub_category_desc],
             ], 201);
         } catch (\Exception $e) {
@@ -190,7 +190,7 @@ class SubCategoryController extends Controller
 
                 return response()->json([
                 "status" => "success",
-                "message" => "Deleted main category success",
+                "message" => "Deleted sub category success",
                 "data" => [],
             ], 201);
             }
