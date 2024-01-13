@@ -51,13 +51,13 @@ class ServiceCategoryController extends Controller
                 "sub_category_id"   => ["nullable", "uuid"],
                 // "service_name.en"   => ["required", "string", "min:3"],
                 // "service_name.th"   => ["required", "string", "min:3"],
-                "icon"              => ["nullable", "string"],
-                "is_url_list"       => ["required", "boolean"],
-                "url"               => ["required_if:is_url_list,false", "nullable", "string", "min:5"],
-                "url_list"          => ["required_if:is_url_list,true", "present", "array"],
-                "url_list.*.url"    => ["required_if:is_url_list,true", "nullable", "string", "min:3"],
-                "url_list.*.service_name.en" => ["required_if:is_url_list,true", "nullable", "string", "min:3"],
-                "url_list.*.service_name.th" => ["required_if:is_url_list,true", "nullable", "string", "min:3"],
+                // "icon"              => ["nullable", "string"],
+                // "is_url_list"       => ["required", "boolean"],
+                // "url"               => ["required_if:is_url_list,false", "nullable", "string", "min:5"],
+                // "url_list"          => ["required_if:is_url_list,true", "present", "array"],
+                // "url_list.*.url"    => ["required_if:is_url_list,true", "nullable", "string", "min:3"],
+                // "url_list.*.service_name.en" => ["required_if:is_url_list,true", "nullable", "string", "min:3"],
+                // "url_list.*.service_name.th" => ["required_if:is_url_list,true", "nullable", "string", "min:3"],
             ];
 
             $validator = Validator::make($request->all(), $rules);
