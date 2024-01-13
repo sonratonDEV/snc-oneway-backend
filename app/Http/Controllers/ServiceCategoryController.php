@@ -49,8 +49,8 @@ class ServiceCategoryController extends Controller
             $rules = [
                 "main_category_id"  => ["required", "uuid"],
                 "sub_category_id"   => ["nullable", "uuid"],
-                "service_name.en"   => ["required", "string", "min:3"],
-                "service_name.th"   => ["required", "string", "min:3"],
+                // "service_name.en"   => ["required", "string", "min:3"],
+                // "service_name.th"   => ["required", "string", "min:3"],
                 "icon"              => ["nullable", "string"],
                 "is_url_list"       => ["required", "boolean"],
                 "url"               => ["required_if:is_url_list,false", "nullable", "string", "min:5"],
@@ -120,8 +120,8 @@ class ServiceCategoryController extends Controller
                 "data" => []
             ], 401);
 
-            //Caching
-            $cacheKey = "abc";
+            // API Caching
+            $cacheKey = "/service-oneway/get-all-cache";
             $cacheData = Cache::get($cacheKey);
             if (!is_null($cacheData))  return response([
                 "status" => "success",
@@ -158,7 +158,7 @@ class ServiceCategoryController extends Controller
                 unset($row->main_created_at);
                 unset($row->sub_created_at);
             }
-            
+
             Cache::put($cacheKey, \json_encode($result, JSON_UNESCAPED_UNICODE), \DateInterval::createFromDateString('1 minutes'));
             // Cache::put($cacheKey, \json_encode($result, JSON_UNESCAPED_UNICODE), \DateInterval::createFromDateString('5 seconds'));
 
