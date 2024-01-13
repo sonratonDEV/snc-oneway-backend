@@ -9,6 +9,7 @@ use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\EventCategoryController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ToDoController;
 
 // test main route
 Route::get('/', function(){
@@ -76,4 +77,11 @@ Route::prefix('event-oneway') -> controller(EventController::class) -> group(fun
     Route::delete("/delete", "delete"); //Route::delete("/", "delete");
     Route::patch("/approve", "approve");
     Route::patch("/disapprove", "disapprove");
+});
+
+Route::prefix('todo-oneway') -> controller(ToDoController::class) -> group(function () {
+    Route::post('/create','create');
+    Route::get('/get-all','getAll');
+    Route::put('/update','update');
+    Route::delete("/delete", "delete");
 });
