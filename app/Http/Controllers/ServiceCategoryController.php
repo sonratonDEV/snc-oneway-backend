@@ -49,10 +49,10 @@ class ServiceCategoryController extends Controller
             $rules = [
                 "main_category_id"  => ["required", "uuid"],
                 "sub_category_id"   => ["nullable", "uuid"],
-                // "service_name.en"   => ["required", "string", "min:3"],
-                // "service_name.th"   => ["required", "string", "min:3"],
-                // "icon"              => ["nullable", "string"],
-                // "is_url_list"       => ["required", "boolean"],
+                "service_name.en"   => ["required", "string", "min:3"],
+                "service_name.th"   => ["required", "string", "min:3"],
+                "icon"              => ["nullable", "string"],
+                "is_url_list"       => ["required", "boolean"],
                 // "url"               => ["required_if:is_url_list,false", "nullable", "string", "min:5"],
                 // "url_list"          => ["required_if:is_url_list,true", "present", "array"],
                 // "url_list.*.url"    => ["required_if:is_url_list,true", "nullable", "string", "min:3"],
@@ -89,8 +89,8 @@ class ServiceCategoryController extends Controller
                 "service_name"      => json_encode($request->service_name, JSON_UNESCAPED_UNICODE),
                 "icon"              => $fileName,
                 "is_url_list"       => $request->is_url_list,
-                "url"               => $request->url,
-                "url_list"          => is_null($request->url_list) || count($request->url_list) == 0 ? null : json_encode($request->url_list, JSON_UNESCAPED_UNICODE),
+                // "url"               => $request->url,
+                // "url_list"          => is_null($request->url_list) || count($request->url_list) == 0 ? null : json_encode($request->url_list, JSON_UNESCAPED_UNICODE),
                 "creator_id"        => $decoded->emp_id
             ]);
 
