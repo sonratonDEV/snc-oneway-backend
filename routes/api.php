@@ -10,6 +10,8 @@ use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\EventCategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ToDoController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RoleAccessController;
 
 // test main route
 Route::get('/', function(){
@@ -80,6 +82,20 @@ Route::prefix('event-oneway') -> controller(EventController::class) -> group(fun
 });
 
 Route::prefix('todo-oneway') -> controller(ToDoController::class) -> group(function () {
+    Route::post('/create','create');
+    Route::get('/get-all','getAll');
+    Route::put('/update','update');
+    Route::delete("/delete", "delete");
+});
+
+Route::prefix('role-oneway') -> controller(RoleController::class) -> group(function () {
+    Route::post('/create','create');
+    Route::get('/get-all','getAll');
+    Route::put('/update','update');
+    Route::delete("/delete", "delete");
+});
+
+Route::prefix('access-oneway') -> controller(RoleAccessController::class) -> group(function () {
     Route::post('/create','create');
     Route::get('/get-all','getAll');
     Route::put('/update','update');
