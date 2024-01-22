@@ -47,6 +47,26 @@ class MainCategoryController extends Controller
                 ],400);
             }
 
+            $role_id = DB::table('tb_role as t1')->selectRaw('*')->leftJoin('tb_role_function as t2','t2.role_id','=','t1.role_id')->get();
+            // return response() -> json($role_id);
+
+            // $roleArrat = [];
+
+            foreach ($role_id as $doc){
+               $doc->role_desc =$role_id->role_desc;
+            }
+
+            return response() -> json($role_id);
+
+            // if ($role != 'admin' or $isAvailable != true){
+            //     return response() -> json([
+            //         "status"=>"error",
+            //         "message" =>"Cannot access , you have't a permission.",
+            //         "data" => [],
+            //     ]);
+
+            // }
+
             $mainCategoryDesc = $request -> main_category_desc;
 
             DB::table('tb_main_service_categories')->insert([
