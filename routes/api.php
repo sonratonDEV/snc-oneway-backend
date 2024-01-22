@@ -12,6 +12,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\ToDoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleAccessController;
+use App\Http\Controllers\RoleFunctionController;
 
 // test main route
 Route::get('/', function(){
@@ -96,6 +97,13 @@ Route::prefix('role-oneway') -> controller(RoleController::class) -> group(funct
 });
 
 Route::prefix('access-oneway') -> controller(RoleAccessController::class) -> group(function () {
+    Route::post('/create','create');
+    Route::get('/get-all','getAll');
+    Route::put('/update','update');
+    Route::delete("/delete", "delete");
+});
+
+Route::prefix('function-oneway') -> controller(RoleFunctionController::class) -> group(function () {
     Route::post('/create','create');
     Route::get('/get-all','getAll');
     Route::put('/update','update');
