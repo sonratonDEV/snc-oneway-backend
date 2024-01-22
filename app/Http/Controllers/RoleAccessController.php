@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB; //import database
 use App\Http\Libraries\JWT\JWTUtils; //JWT
 class RoleAccessController extends Controller
 {
-     //
      private $jwtUtils;
      public function __construct()
      {
@@ -82,7 +81,19 @@ class RoleAccessController extends Controller
                  ]);
              }
  
-             $get = DB::table('tb_role_access')->select('*')->get();
+             $get = DB::table('tb_role_access as t1')->selectRaw(
+             "t1.role_access_id,
+             t1.is_available,
+             t2.role_desc,
+             t3.service_name",
+             )->Join('tb_role as t2','t2.role_id','=','t1.role_id'
+             )->leftJoin('tb_services as t3','t3.service_id','=','t1.service_id'
+             )->where("t1.is_available", true
+             )->get();
+
+             foreach ($get as $doc){
+                $doc->service_name = json_decode($doc->service_name);
+            }
  
              return response()->json([
                  "status"    => "success",
