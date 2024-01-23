@@ -30,6 +30,8 @@ class MainCategoryController extends Controller
                     "data" => [],
                 ]);
             }
+            $decoded = $jwt->decoded;
+
 
             $validator = Validator::make(
                 $request -> all(),
@@ -47,37 +49,56 @@ class MainCategoryController extends Controller
                 ],400);
             }
 
+            //decode role from token
+            $roleToken = $decoded->role;
+
+            // return response() -> json([$roleToken]);
+
             $role_id = DB::table('tb_role as t1')->selectRaw('*')->leftJoin('tb_role_function as t2','t2.role_id','=','t1.role_id')->get();
-            // return response() -> json($role_id);
+           
+            $formattedRoles = [];
 
-            // $roleArrat = [];
-
-            foreach ($role_id as $doc){
-               $doc->role_desc =$role_id->role_desc;
+            foreach ($role_id as $doc) {
+                $role = [
+                    'role_id' => $doc->role_id,
+                    'role_desc' => $doc->role_desc,
+                    'data' => [
+                        'created_at' => $doc->created_at,
+                        'updated_at' => $doc->updated_at,
+                        'role_function_id' => $doc->role_function_id,
+                        'function_desc' => $doc->function_desc,
+                        'is_available' => $doc->is_available,
+                    ],
+                ];
+            
+                $formattedRoles[] = $role;
+            
+                // Debugging: Print information for each iteration
+                echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
+            
+                // Check for "Create main categories" function availability for any role
+                if ($roleToken == $doc->role_desc && $doc->function_desc == 'Create main categories' && $doc->is_available == true) {
+                    $mainCategoryDesc = $request->main_category_desc;
+            
+                    // Insert data into the database
+                    DB::table('tb_main_service_categories')->insert([
+                        'main_category_desc' => $mainCategoryDesc
+                    ]);
+            
+                    return response()->json([
+                        "status" => "success",
+                        "message" => 'Insert data successfully',
+                        "data" => [$mainCategoryDesc],
+                    ], 200);
+                }
             }
-
-            return response() -> json($role_id);
-
-            // if ($role != 'admin' or $isAvailable != true){
-            //     return response() -> json([
-            //         "status"=>"error",
-            //         "message" =>"Cannot access , you have't a permission.",
-            //         "data" => [],
-            //     ]);
-
-            // }
-
-            $mainCategoryDesc = $request -> main_category_desc;
-
-            DB::table('tb_main_service_categories')->insert([
-                'main_category_desc' => $mainCategoryDesc
-            ]);
-
+            
+            // If the loop completes without finding a match, return an error
             return response()->json([
-                "status"    => "success",
-                "message"   => 'Insert data successfully',
-                "data"      => [$mainCategoryDesc],
-            ], 200);
+                "status" => "error",
+                "message" => "Cannot access, you don't have permission.",
+                "data" => [],
+            ]);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -87,6 +108,7 @@ class MainCategoryController extends Controller
             ], 500);
         }
     }
+
 
 //* [GET] /main-oneway/get-all
     function getAll(Request $request){
