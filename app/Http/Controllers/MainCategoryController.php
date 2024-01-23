@@ -32,7 +32,6 @@ class MainCategoryController extends Controller
             }
             $decoded = $jwt->decoded;
 
-
             $validator = Validator::make(
                 $request -> all(),
                 [
