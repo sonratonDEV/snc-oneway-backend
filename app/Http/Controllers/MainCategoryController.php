@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator; //ตัวเช็คข้อมูล
 use Illuminate\Support\Facades\DB; //import database
-
+use Illuminate\Support\Facades\Cache;
 use App\Http\Libraries\JWT\JWTUtils; //JWT
 
 use DateTime;
@@ -51,11 +51,9 @@ class MainCategoryController extends Controller
             //decode role from token
             $roleToken = $decoded->role;
 
-            // return response() -> json([$roleToken]);
-
             $role_id = DB::table('tb_role as t1')->selectRaw('*')->leftJoin('tb_role_function as t2','t2.role_id','=','t1.role_id')->get();
            
-            $formattedRoles = [];
+            // $formattedRoles = [];
 
             foreach ($role_id as $doc) {
                 $role = [
@@ -70,7 +68,7 @@ class MainCategoryController extends Controller
                     ],
                 ];
             
-                $formattedRoles[] = $role;
+                // $formattedRoles[] = $role;
             
                 // Debugging: Print information for each iteration
                 echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
@@ -78,7 +76,18 @@ class MainCategoryController extends Controller
                 // Check for "Create main categories" function availability for any role
                 if ($roleToken == $doc->role_desc && $doc->function_desc == 'Create main categories' && $doc->is_available == true) {
                     $mainCategoryDesc = $request->main_category_desc;
-            
+                    
+                    $categoryCheck = DB::table('tb_main_service_categories')->select('*')->where('main_category_desc',$request->main_category_desc)->get();
+
+                    if(count($categoryCheck) !=0){
+                        return response()->json([
+                            "status" => "error",
+                            "message" => "the main category has been in system",
+                            "data" =>[]
+
+                        ]);
+
+                    }
                     // Insert data into the database
                     DB::table('tb_main_service_categories')->insert([
                         'main_category_desc' => $mainCategoryDesc
@@ -119,10 +128,20 @@ class MainCategoryController extends Controller
                     "status" => 'error',
                     "message" => "Unauthorized, please login",
                     "data" => [],
-                ]);
+                ], 401);
             }
+            // API Caching
+            $mainCacheKey = "/service-oneway/get-all-cache";
+            $mainCacheData = Cache::get($mainCacheKey);
+            if (!is_null($mainCacheData))  return response([
+                "status" => "success",
+                "message"=> "Data from chaced",
+                "data" => json_decode($mainCacheData)
+            ]);
 
             $get = DB::table('tb_main_service_categories')->select('*')->get();
+
+            Cache::put($mainCacheKey, \json_encode($get, JSON_UNESCAPED_UNICODE), \DateInterval::createFromDateString('1 minutes'));
 
             return response()->json([
                 "status"    => "success",
@@ -150,7 +169,7 @@ class MainCategoryController extends Controller
                 "message" => "Unauthorized",
                 "data" => []
             ], 401);
-
+            
             $rules = [
                 "main_category_id"      => ["required", "uuid"],
                 "main_category_desc"    => ["required", "string", "min:1"],
