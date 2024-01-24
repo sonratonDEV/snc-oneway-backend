@@ -52,8 +52,6 @@ class MainCategoryController extends Controller
             $roleToken = $decoded->role;
 
             $role_id = DB::table('tb_role as t1')->selectRaw('*')->leftJoin('tb_role_function as t2','t2.role_id','=','t1.role_id')->get();
-           
-            // $formattedRoles = [];
 
             foreach ($role_id as $doc) {
                 $role = [
@@ -67,8 +65,6 @@ class MainCategoryController extends Controller
                         'is_available' => $doc->is_available,
                     ],
                 ];
-            
-                // $formattedRoles[] = $role;
             
                 // Debugging: Print information for each iteration
                 echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
@@ -169,7 +165,9 @@ class MainCategoryController extends Controller
                 "message" => "Unauthorized",
                 "data" => []
             ], 401);
-            
+            $decoded = $jwt->decoded;
+            //decode role from token
+            $roleToken = $decoded->role;
             $rules = [
                 "main_category_id"      => ["required", "uuid"],
                 "main_category_desc"    => ["required", "string", "min:1"],
@@ -184,16 +182,54 @@ class MainCategoryController extends Controller
                 ]
             ], 400);
 
-            DB::table("tb_main_service_categories")->where("main_category_id", $request->main_category_id)->update([
-                "main_category_desc"    => $request->main_category_desc,
-                "updated_at"            => DB::raw("now()"),
+            $role_id = DB::table('tb_role as t1')->selectRaw('*')->leftJoin('tb_role_function as t2','t2.role_id','=','t1.role_id')->get();
+
+            foreach ($role_id as $doc) {
+                $role = [
+                    'role_id' => $doc->role_id,
+                    'role_desc' => $doc->role_desc,
+                    'data' => [
+                        'created_at' => $doc->created_at,
+                        'updated_at' => $doc->updated_at,
+                        'role_function_id' => $doc->role_function_id,
+                        'function_desc' => $doc->function_desc,
+                        'is_available' => $doc->is_available,
+                    ],
+                ];
+            
+                // Debugging: Print information for each iteration
+                echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
+            
+                // Check for "Create main categories" function availability for any role
+                if ($roleToken == $doc->role_desc && $doc->function_desc == 'Update main categories' && $doc->is_available == true) {
+                    $categoryCheck = DB::table('tb_main_service_categories')->select('*')->where('main_category_desc',$request->main_category_desc)->get();
+
+                    if(count($categoryCheck) !=0){
+                        return response()->json([
+                            "status" => "error",
+                            "message" => "the main category has been in system",
+                            "data" =>[]
+                        ]);
+                    }
+
+                DB::table("tb_main_service_categories")->where("main_category_id", $request->main_category_id)->update([
+                    "main_category_desc"    => $request->main_category_desc,
+                    "updated_at"            => DB::raw("now()"),
+                ]);
+
+                return response()->json([
+                    "status" => "success",
+                    "message" => "Updated main category success",
+                    "data" => [$request->main_category_desc],
+                ], 201);
+                }}   
+            // If the loop completes without finding a match, return an error
+            return response()->json([
+                "status" => "error",
+                "message" => "Cannot access, you don't have permission.",
+                "data" => [],
             ]);
 
-            return response()->json([
-                "status" => "success",
-                "message" => "Updated main category success",
-                "data" => [],
-            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 "status"    => "error",
@@ -214,7 +250,9 @@ class MainCategoryController extends Controller
                 "message" => "Unauthorized",
                 "data" => []
             ], 401);
-
+            $decoded = $jwt->decoded;
+            //decode role from token
+            $roleToken = $decoded->role;
             $rules = [
                 "main_category_id"      => ["required", "uuid"],
             ];
@@ -228,33 +266,54 @@ class MainCategoryController extends Controller
                 ]
             ], 400);
 
-            // DB::table("tb_main_service_categories")->where("main_category_id", $request->main_category_id)->delete();
-            $count_result= DB::table("tb_sub_service_categories")->where("main_category_id", $request->main_category_id)->count();
-            
-            if(($count_result) !=0 ){
-                return response()->json([
-                    "status" => "success",
-                    "message" => "Can not deleted main category",
-                    "data" => [
-                            $count_result
+            $role_id = DB::table('tb_role as t1')->selectRaw('*')->leftJoin('tb_role_function as t2','t2.role_id','=','t1.role_id')->get();
+
+            foreach ($role_id as $doc) {
+                $role = [
+                    'role_id' => $doc->role_id,
+                    'role_desc' => $doc->role_desc,
+                    'data' => [
+                        'created_at' => $doc->created_at,
+                        'updated_at' => $doc->updated_at,
+                        'role_function_id' => $doc->role_function_id,
+                        'function_desc' => $doc->function_desc,
+                        'is_available' => $doc->is_available,
                     ],
-                ], 201);
+                ];
+            
+                // Debugging: Print information for each iteration
+                echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
+            
+                // Check for "Create main categories" function availability for any role
+                if ($roleToken == $doc->role_desc && $doc->function_desc == 'Delete main categories' && $doc->is_available == true) {
 
-            } else{
-                DB::table("tb_main_service_categories")->where("main_category_id", $request->main_category_id)->delete();
+                    $count_result= DB::table("tb_sub_service_categories")->where("main_category_id", $request->main_category_id)->count();
+                    
+                    if(($count_result) !=0 ){
+                        return response()->json([
+                            "status" => "success",
+                            "message" => "Can not deleted main category",
+                            "data" => [
+                                    $count_result
+                            ],
+                        ], 201);
 
-                return response()->json([
-                "status" => "success",
-                "message" => "Deleted main category success",
+                    } else{
+                        DB::table("tb_main_service_categories")->where("main_category_id", $request->main_category_id)->delete();
+
+                        return response()->json([
+                        "status" => "success",
+                        "message" => "Deleted main category success",
+                        "data" => [],
+                    ], 201);
+                    }}}
+            // If the loop completes without finding a match, return an error
+            return response()->json([
+                "status" => "error",
+                "message" => "Cannot access, you don't have permission.",
                 "data" => [],
-            ], 201);
-            }
-
-            // return response()->json([
-            //     "status" => "success",
-            //     "message" => "Deleted main category success",
-            //     "data" => [],
-            // ], 201);
+            ]);
+            
         } catch (\Exception $e) {
             return response()->json([
                 "status"    => "error",
