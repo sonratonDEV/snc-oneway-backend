@@ -28,7 +28,7 @@ class MainCategoryController extends Controller
                     "status" => 'error',
                     "message" => "Unauthorized, please login",
                     "data" => [],
-                ]);
+                ],401);
             }
             $decoded = $jwt->decoded;
 
