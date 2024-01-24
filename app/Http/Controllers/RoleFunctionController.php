@@ -34,6 +34,8 @@ class RoleFunctionController extends Controller
                 [
                     'role_id' => ["required", "uuid"],
                     'function_desc' => ["required", "string", "min:1"],
+                    "is_available" => ["required", "boolean"],
+                    'api' => ["required", "string", "min:1"],
                 ]
             );
             if ($validator->fails()){
@@ -46,12 +48,11 @@ class RoleFunctionController extends Controller
                 ],400);
             }
 
-            $role_id = $request -> role_id;
-            $function_desc = $request -> function_desc;
-
             DB::table('tb_role_function')->insert([
-                'role_id' => $role_id,
-                'function_desc'=> $function_desc
+                'role_id' => $request -> role_id,
+                'function_desc'=> $request -> function_desc,
+                "is_available" => $request -> is_available,
+                'api'=> $request -> api,
             ]);
 
             return response()->json([
@@ -69,7 +70,7 @@ class RoleFunctionController extends Controller
         }
     }
 
-//* [GET] /access-oneway/get-all
+//* [GET] /function-oneway/get-all
     function getAll(Request $request){
         try {
             $header = $request -> header("Authorization");
@@ -82,12 +83,7 @@ class RoleFunctionController extends Controller
                 ]);
             }
 
-            $get = DB::table('tb_role_function')->select("*"
-            )->get();
-
-        //     foreach ($get as $doc){
-        //        $doc->service_name = json_decode($doc->service_name);
-        //    }
+            $get = DB::table('tb_role_function')->select("*")->get();
 
             return response()->json([
                 "status"    => "success",
