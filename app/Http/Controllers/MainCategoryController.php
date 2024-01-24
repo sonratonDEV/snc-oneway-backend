@@ -127,17 +127,17 @@ class MainCategoryController extends Controller
                 ], 401);
             }
             // API Caching
-            $mainCacheKey = "/service-oneway/get-all-cache";
-            $mainCacheData = Cache::get($mainCacheKey);
-            if (!is_null($mainCacheData))  return response([
+            $cacheKey = "/main-oneway/get-all-cache";
+            $cacheData = Cache::get($cacheKey);
+            if (!is_null($cacheData))  return response([
                 "status" => "success",
                 "message"=> "Data from chaced",
-                "data" => json_decode($mainCacheData)
+                "data" => json_decode($cacheData)
             ]);
 
             $get = DB::table('tb_main_service_categories')->select('*')->get();
 
-            Cache::put($mainCacheKey, \json_encode($get, JSON_UNESCAPED_UNICODE), \DateInterval::createFromDateString('1 minutes'));
+            Cache::put($cacheKey, \json_encode($get, JSON_UNESCAPED_UNICODE), \DateInterval::createFromDateString('1 minutes'));
 
             return response()->json([
                 "status"    => "success",
