@@ -80,8 +80,9 @@ class ToDoController extends Controller
                     "data" => [],
                 ], 401);
             }
+            $decoded = $jwt->decoded;
 
-            $get = DB::table('tb_todo')->select('*')->get();
+            $get = DB::table('tb_todo')->select('*')->where('creator_id',$decoded)->get();
 
             return response()->json([
                 "status"    => "success",
