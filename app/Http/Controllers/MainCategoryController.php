@@ -200,7 +200,7 @@ class MainCategoryController extends Controller
                 // Debugging: Print information for each iteration
                 echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
             
-                // Check for "Create main categories" function availability for any role
+                // Check for "Update main categories" function availability for any role
                 if ($roleToken == $doc->role_desc && $doc->function_desc == 'Update main categories' && $doc->is_available == true) {
                     $categoryCheck = DB::table('tb_main_service_categories')->select('*')->where('main_category_desc',$request->main_category_desc)->get();
 
@@ -284,7 +284,7 @@ class MainCategoryController extends Controller
                 // Debugging: Print information for each iteration
                 echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
             
-                // Check for "Create main categories" function availability for any role
+                // Check for "Delete main categories" function availability for any role
                 if ($roleToken == $doc->role_desc && $doc->function_desc == 'Delete main categories' && $doc->is_available == true) {
 
                     $count_result= DB::table("tb_sub_service_categories")->where("main_category_id", $request->main_category_id)->count();
