@@ -69,7 +69,7 @@ class SubCategoryController extends Controller
                 // Debugging: Print information for each iteration
                 echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
             
-                // Check for "Create main categories" function availability for any role
+                // Check for "Create sub categories" function availability for any role
                 if ($roleToken == $doc->role_desc && $doc->function_desc == 'Create sub categories' && $doc->is_available == true) {
                     
                     $categoryCheck = DB::table('tb_sub_service_categories')->select('*')->where('sub_category_desc',$request->sub_category_desc)->get();
@@ -199,7 +199,7 @@ class SubCategoryController extends Controller
                 // Debugging: Print information for each iteration
                 echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
 
-                // Check for "Create main categories" function availability for any role
+                // Check for "Update sub categories" function availability for any role
                 if ($roleToken == $doc->role_desc && $doc->function_desc == 'Update sub categories' && $doc->is_available == true) {
                     $categoryCheck = DB::table('tb_sub_service_categories')->select('*')->where('sub_category_desc',$request->sub_category_desc)->get();
 
@@ -288,7 +288,7 @@ class SubCategoryController extends Controller
                 // Debugging: Print information for each iteration
                 echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
 
-                // Check for "Create main categories" function availability for any role
+                // Check for "Delete sub categories" function availability for any role
                 if ($roleToken == $doc->role_desc && $doc->function_desc == 'Delete sub categories' && $doc->is_available == true) {
 
                 $count_result= DB::table("tb_services")->where("sub_category_id", $request->sub_category_id)->where("main_category_id", $request->main_category_id)->count();
