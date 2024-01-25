@@ -405,7 +405,9 @@ class EventController extends Controller
                 // "message" => $jwt->msg,
                 "data" => []
             ], 401);
-            // $decoded = $jwt->decoded;
+            $decoded = $jwt->decoded;
+            //decode role from token
+            $roleToken = $decoded->role;
 
             $rules = [
                 "event_id"          => ["required", "uuid"],
@@ -420,19 +422,48 @@ class EventController extends Controller
                 ]
             ], 400);
 
-            $result = DB::table("tb_events")->where("event_id", $request->event_id)->where("is_approved", null)->update(["is_approved" => true]);
+            $role_id = DB::table('tb_role as t1')->selectRaw('*')->leftJoin('tb_role_function as t2','t2.role_id','=','t1.role_id')->get();
 
-            if ($result == 0) return response()->json([
+            foreach ($role_id as $doc) {
+                $role = [
+                    'role_id' => $doc->role_id,
+                    'role_desc' => $doc->role_desc,
+                    'data' => [
+                        'created_at' => $doc->created_at,
+                        'updated_at' => $doc->updated_at,
+                        'role_function_id' => $doc->role_function_id,
+                        'function_desc' => $doc->function_desc,
+                        'is_available' => $doc->is_available,
+                    ],
+                ];
+                // Debugging: Print information for each iteration
+                echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
+
+                // Check for "Approve event" function availability for any role
+                if ($roleToken == $doc->role_desc && $doc->function_desc == 'Approve event' && $doc->is_available == true) {
+
+                    $result = DB::table("tb_events")->where("event_id", $request->event_id)->where("is_approved", null)->update(["is_approved" => true]);
+
+                    if ($result == 0) {
+                        return response()->json([
+                            "status" => "error",
+                            "message" => "event_id does not exists",
+                            "data" => [],
+                        ]);
+                    } else {
+                        return response()->json([
+                            "status" => "success",
+                            "message" => "Approved event successfully",
+                            "data" => [],
+                        ], 201);
+                    }}}
+            // If the loop completes without finding a match, return an error
+            return response()->json([
                 "status" => "error",
-                "message" => "event_id does not exists",
+                "message" => "Cannot access, you don't have permission.",
                 "data" => [],
             ]);
 
-            return response()->json([
-                "status" => "success",
-                "message" => "Approved event successfully",
-                "data" => [],
-            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 "status"    => "error",
@@ -449,10 +480,11 @@ class EventController extends Controller
             if (!$jwt->state) return response()->json([
                 "status" => "error",
                 "message" => "Unauthorized",
-                // "message" => $jwt->msg,
                 "data" => []
             ], 401);
-            // $decoded = $jwt->decoded;
+            $decoded = $jwt->decoded;
+            //decode role from token
+            $roleToken = $decoded->role;
 
             $rules = [
                 "event_id"          => ["required", "uuid"],
@@ -467,19 +499,48 @@ class EventController extends Controller
                 ]
             ], 400);
 
-            $result = DB::table("tb_events")->where("event_id", $request->event_id)->where("is_approved", null)->update(["is_approved" => false]);
+            $role_id = DB::table('tb_role as t1')->selectRaw('*')->leftJoin('tb_role_function as t2','t2.role_id','=','t1.role_id')->get();
 
-            if ($result == 0) return response()->json([
+            foreach ($role_id as $doc) {
+                $role = [
+                    'role_id' => $doc->role_id,
+                    'role_desc' => $doc->role_desc,
+                    'data' => [
+                        'created_at' => $doc->created_at,
+                        'updated_at' => $doc->updated_at,
+                        'role_function_id' => $doc->role_function_id,
+                        'function_desc' => $doc->function_desc,
+                        'is_available' => $doc->is_available,
+                    ],
+                ];
+                // Debugging: Print information for each iteration
+                echo "Role: {$doc->role_desc}, Function: {$doc->function_desc}, isAvailable: {$doc->is_available}\n";
+
+                // Check for "Disapprove event" function availability for any role
+                if ($roleToken == $doc->role_desc && $doc->function_desc == 'Disapprove event' && $doc->is_available == true) {
+
+                $result = DB::table("tb_events")->where("event_id", $request->event_id)->where("is_approved", null)->update(["is_approved" => false]);
+
+                if ($result == 0) {
+                    return response()->json([
+                        "status" => "error",
+                        "message" => "event_id does not exists",
+                        "data" => [],
+                    ]);
+                } else {
+                    return response()->json([
+                        "status" => "success",
+                        "message" => "Disapproved event successfully",
+                        "data" => [],
+                    ], 201);}}}
+
+            // If the loop completes without finding a match, return an error
+            return response()->json([
                 "status" => "error",
-                "message" => "event_id does not exists",
+                "message" => "Cannot access, you don't have permission.",
                 "data" => [],
             ]);
 
-            return response()->json([
-                "status" => "success",
-                "message" => "Disapproved event successfully",
-                "data" => [],
-            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 "status"    => "error",
