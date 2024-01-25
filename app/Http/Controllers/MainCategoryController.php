@@ -295,7 +295,7 @@ class MainCategoryController extends Controller
                             "message" => "Can not deleted main category",
                             "data" => [
                                     $count_result
-                            ],
+                            ],  
                         ], 201);
 
                     } else{
